@@ -8,11 +8,13 @@ argument-hint: <run_id>
 
 Delegate to the `colab-runner` subagent so the raw log stays out of this conversation.
 
-On this machine (`configs/paths.yaml` → `read_channel: mcp`), it reads `train.log` and
-`metrics.jsonl` for the run from `/content/drive/MyDrive/brats_runs/<run_id>/` via the
-`mcp__claude_ai_Google_Drive__*` tools (account: `drive_account` in paths.yaml), not
-`scripts/tail_run.py` — there is no local mount to run that script against. It reports
-back only:
+If the run was launched via the `colab` CLI, it reads status with `colab status -s
+<run_id>` and output with `colab log -s <run_id> -n 100`. If it's a run using the legacy
+manual-paste bridge instead, it reads `train.log`/`metrics.jsonl` from
+`/content/drive/MyDrive/brats_runs/<run_id>/` via the `mcp__claude_ai_Google_Drive__*`
+tools (`configs/paths.yaml` → `read_channel: mcp`, account: `drive_account`) — not
+`scripts/tail_run.py`, since there's no local Drive mount on this machine. Either way it
+reports back only:
 
 - **Alive?** last log write time vs now; GPU name from the log header
 - **Progress:** epoch N of M, seconds/epoch, projected finish time

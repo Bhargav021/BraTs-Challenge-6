@@ -1,14 +1,22 @@
 # Single source of truth for paths. Never hardcode these in code.
 
-# The Google account both Colab's drive.mount() and the MCP Google Drive connector
-# must be logged into. InputScans_Final is shared into this account via shortcut
-# from limbasiabb@gmail.com, and existing checkpoints (best_brats_v15.pt, v16.pt)
-# already live here, so this is the account with a working history.
+# The Google account for Colab (drive.mount(), the `colab` CLI, colab-mcp, and the
+# MCP Google Drive connector all use this one). InputScans_Final is shared into this
+# account via shortcut from limbasiabb@gmail.com, and existing checkpoints
+# (best_brats_v15.pt, v16.pt) already live here, so this is the account with history.
 drive_account: "blimbasi@usc.edu"
 
+# Colab bridge, in order of preference — see CLAUDE.md "Machine and paths" and
+# .claude/agents/colab-runner.md for the full breakdown:
+#   1. colab CLI (google-colab-cli, ~/.local/bin/colab, --auth oauth2) — headless
+#      colab new/exec/run/log/download. No browser tab needed.
+#   2. colab-mcp (.mcp.json, project-scoped) — live bridge to a notebook already open
+#      in the user's browser, for watching/debugging hand-run cells.
+#   3. Legacy: paste scripts/colab_bootstrap.py into a cell, mirror to Drive.
+
 # How Claude Code (running locally, on Linux, with no Drive FUSE mount) reads the
-# Colab run mirror: "mcp" = the mcp__claude_ai_Google_Drive__* tools (recommended,
-# already authenticated, zero local setup). "rclone" = a local mount that
+# legacy channel's Drive mirror: "mcp" = the mcp__claude_ai_Google_Drive__* tools
+# (recommended, already authenticated, zero local setup). "rclone" = a local mount that
 # scripts/tail_run.py reads directly. "both" if you later add an rclone mount.
 read_channel: "mcp"
 

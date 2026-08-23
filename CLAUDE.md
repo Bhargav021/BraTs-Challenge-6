@@ -57,15 +57,23 @@ checkpoint version represents.
 ## Machine and paths
 - Local dev machine: Linux, no GPU, no local Google Drive mount. Code editing, CPU-only
   tests, and log/metric analysis only. GPU training happens on Colab.
-- The Google account for both Colab's `drive.mount()` and the Drive mirror is
-  **blimbasi@usc.edu** — see `configs/paths.yaml`. Never assume a local filesystem path
-  to Drive exists; it doesn't on this machine.
-- Claude reads the Drive mirror (`train.log`, `metrics.jsonl`, checkpoints) through the
-  **MCP Google Drive connector** (`mcp__claude_ai_Google_Drive__*` tools), already
-  authenticated to that account — not through `scripts/tail_run.py`, which needs a local
-  mount this machine doesn't have. `read_channel` in `configs/paths.yaml` records this.
-- Run artifacts mirror to `/content/drive/MyDrive/brats_runs/<run_id>/` so Claude can
-  read Colab's output without a browser.
+- The Google account for Colab is **blimbasi@usc.edu** — see `configs/paths.yaml`.
+- **Primary Colab bridge: the official `colab` CLI** (`google-colab-cli`, installed at
+  `~/.local/bin/colab`, authenticated with `--auth oauth2`). `colab new`/`exec`/`run`
+  provision and drive GPU sessions headlessly from this machine — no copy-pasting cells
+  into a browser tab. `colab log` reads output, `colab download` retrieves checkpoints.
+  See `.claude/agents/colab-runner.md` for the full command set.
+- **Live-notebook debugging: `colab-mcp`**, a project-scoped MCP server (`.mcp.json`)
+  that bridges to a Colab notebook already open in the user's browser — use when the
+  human is working in a notebook by hand and wants Claude to see/react to it directly.
+- **Legacy fallback: git + Drive mirror.** `scripts/colab_bootstrap.py` prints a cell to
+  paste manually; results mirror to `/content/drive/MyDrive/brats_runs/<run_id>/`, read
+  via the **MCP Google Drive connector** (`mcp__claude_ai_Google_Drive__*`) since this
+  machine has no local Drive mount — not `scripts/tail_run.py`. Only used if the CLI is
+  unavailable. See `scripts/colab_ssh_setup.md` for why the cloudflared SSH tunnel this
+  originally used was retired (Colab's ToS restricts unmanaged remote shells on free
+  tier and kills them without warning; the `colab` CLI's own keep-alive + `colab ssh`
+  supersede it).
 
 ## Working agreements with me (the human)
 - Explain before you implement anything architectural. Give me the tradeoff, not just the code.

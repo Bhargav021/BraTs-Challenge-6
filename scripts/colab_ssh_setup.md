@@ -1,3 +1,11 @@
+> **Superseded (2026-08-22):** we hit this exact failure mode live — a cloudflared
+> quick tunnel that kept dying with Cloudflare error 1033 within minutes. Root cause:
+> Colab's ToS disallows unmanaged remote-control shells on free tier and kills them
+> without warning. Google's official `google-colab-cli` (`colab ssh`, `colab console`,
+> plus a built-in keep-alive daemon) and `colab-mcp` (browser-notebook bridge) now cover
+> this need properly — see `.claude/agents/colab-runner.md`. Left below for history /
+> as a last-resort fallback if neither official tool is available.
+
 # Optional: give Claude Code a real shell on the Colab VM
 
 The Drive-mirror channel is enough for launching runs and reading their output, and it
