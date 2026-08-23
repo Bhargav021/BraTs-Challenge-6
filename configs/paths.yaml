@@ -31,4 +31,4 @@ raw:
 
 # Set to the ssh host alias (see scripts/colab_ssh_setup.md) once the cloudflared
 # tunnel is live in the current Colab session, else null. Dies with the session.
-ssh_host: null
+ssh_host: colab
