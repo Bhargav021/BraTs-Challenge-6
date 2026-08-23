@@ -1,0 +1,34 @@
+# Single source of truth for paths. Never hardcode these in code.
+
+# The Google account both Colab's drive.mount() and the MCP Google Drive connector
+# must be logged into. InputScans_Final is shared into this account via shortcut
+# from limbasiabb@gmail.com, and existing checkpoints (best_brats_v15.pt, v16.pt)
+# already live here, so this is the account with a working history.
+drive_account: "blimbasi@usc.edu"
+
+# How Claude Code (running locally, on Linux, with no Drive FUSE mount) reads the
+# Colab run mirror: "mcp" = the mcp__claude_ai_Google_Drive__* tools (recommended,
+# already authenticated, zero local setup). "rclone" = a local mount that
+# scripts/tail_run.py reads directly. "both" if you later add an rclone mount.
+read_channel: "mcp"
+
+local:
+  # This machine does not mount Google Drive on disk. Do not read data_root or
+  # drive_runs as filesystem paths here — there is no local training/data access,
+  # only code editing, CPU-only tests, and reading logs via the MCP connector.
+  data_root: null
+  drive_runs: null
+  experiments: "./experiments"
+
+colab:
+  data_root: "/content/drive/MyDrive/InputScans_Final"
+  drive_runs: "/content/drive/MyDrive/brats_runs"
+  experiments: "/content/brats/experiments"
+
+raw:
+  training: "BraTS-PEDs2025_Training"
+  validation: "BraTS-PEDs2025_Validation"
+
+# Set to the ssh host alias (see scripts/colab_ssh_setup.md) once the cloudflared
+# tunnel is live in the current Colab session, else null. Dies with the session.
+ssh_host: null

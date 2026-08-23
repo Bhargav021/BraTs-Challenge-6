@@ -1,0 +1,12 @@
+# torch is left unpinned: Colab ships a CUDA-matched build already installed, and an
+# unpinned requirement is a no-op for pip if it's already satisfied. Do not pin a
+# version here unless you've checked it matches Colab's current CUDA runtime.
+torch
+torchio
+numpy
+scipy
+scikit-image
+scikit-learn
+nibabel
+opencv-python-headless
+tqdm
